@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code to HTML Converter</title>
+    
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- Prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" id="prism-theme">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./main.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Code to HTML Converter</h1>
+            <p>Convert your code into beautiful HTML markup for static pages</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="highlighter">Highlighter</label>
+                <select id="highlighter">
+                    <option value="highlight">Highlight.js</option>
+                    <option value="prism">Prism.js</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="theme">Theme</label>
+                <select id="theme">
+                    <option value="atom-one-dark">Atom One Dark</option>
+                    <option value="github-dark">GitHub Dark</option>
+                    <option value="monokai">Monokai</option>
+                    <option value="dracula">Dracula</option>
+                    <option value="vs2015">VS 2015</option>
+                    <option value="nord">Nord</option>
+                    <option value="solarized-dark">Solarized Dark</option>
+                    <option value="tokyo-night">Tokyo Night</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="language">Language</label>
+                <select id="language">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="csharp">C#</option>
+                    <option value="php">PHP</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="go">Go</option>
+                    <option value="rust">Rust</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="scss">SCSS</option>
+                    <option value="sql">SQL</option>
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                    <option value="yaml">YAML</option>
+                    <option value="bash">Bash</option>
+                    <option value="powershell">PowerShell</option>
+                    <option value="dockerfile">Dockerfile</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="textarea-wrapper">
+                <label class="textarea-label" for="input">Input Code</label>
+                <textarea id="input" placeholder="Paste your code here..."></textarea>
+            </div>
+            <div class="textarea-wrapper">
+                <label class="textarea-label" for="output">Preview</label>
+                <div class="output-container">
+                    <div id="output" class="code-preview"></div>
+                    <button class="copy-btn floating-copy-btn" onclick="copyToClipboard()">Copy HTML</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="instructions">
+        <div class="instructions-content">
+            <h3>📋 How to use the generated HTML</h3>
+            <p>To use the generated HTML markup in your page, you need to include the corresponding CSS theme file in your HTML document's head section:</p>
+            
+            <div class="instruction-details">
+                <p><strong id="highlighter-instruction-title">For Highlight.js:</strong></p>
+                <pre id="css-instruction">&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"&gt;</pre>
+                
+                <p>Then simply paste your generated HTML markup wherever you want the code to appear in your page. The styling will be applied automatically!</p>
+                
+                <div class="css-size-info">
+                    <p><strong>CSS File Size:</strong> <span id="css-size">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
