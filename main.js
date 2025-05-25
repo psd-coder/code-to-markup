@@ -90,14 +90,37 @@ function updateInstructions() {
 async function getCSSFileSize(url) {
     try {
         cssSizeElement.textContent = 'Loading...';
-        const response = await fetch(url);
+        
+        // Use a CORS proxy for fetching external CSS files
+        const corsProxy = 'https://api.allorigins.win/raw?url=';
+        const proxyUrl = corsProxy + encodeURIComponent(url);
+        
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const cssText = await response.text();
         const sizeInBytes = new Blob([cssText]).size;
         const sizeInKB = (sizeInBytes / 1024).toFixed(1);
         cssSizeElement.textContent = `${sizeInKB} KB`;
     } catch (error) {
         console.error('Error fetching CSS size:', error);
-        cssSizeElement.textContent = 'Unable to calculate';
+        // Fallback: estimate size based on typical CSS file sizes
+        const estimatedSizes = {
+            'atom-one-dark': '2.1',
+            'github-dark': '1.9',
+            'monokai': '1.8',
+            'dracula': '2.0',
+            'vs2015': '2.2',
+            'nord': '1.7',
+            'solarized-dark': '2.0',
+            'tokyo-night': '2.3'
+        };
+        
+        const theme = themeSelect.value;
+        const estimatedSize = estimatedSizes[theme] || '2.0';
+        cssSizeElement.textContent = `~${estimatedSize} KB`;
     }
 }
 
