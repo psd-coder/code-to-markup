@@ -4,136 +4,139 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Code to HTML Converter</title>
-
-    <!-- Highlight.js -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
-      id="hljs-theme"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
-    <!-- Prism.js -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
-      id="prism-theme"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-
     <link rel="stylesheet" href="./styles.css" />
-    <script src="./main.js" defer></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js"
+      defer
+    ></script>
+    <script src="./app.js"></script>
   </head>
   <body>
-    <div class="header">
-      <h1 class="header__heading">Code to HTML Converter</h1>
-      <p class="header__description">
-        Convert your code into beautiful HTML markup for static pages
-      </p>
-    </div>
-    <div class="container">
-      <div class="inner">
-        <div class="control-group">
-          <label class="label" for="highlighter">Highlighter</label>
-          <select id="highlighter" class="select">
-            <option value="highlight">Highlight.js</option>
-            <option value="prism">Prism.js</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label class="label" for="theme">Theme</label>
-          <select id="theme" class="select">
-            <option value="atom-one-dark">Atom One Dark</option>
-            <option value="github-dark">GitHub Dark</option>
-            <option value="monokai">Monokai</option>
-            <option value="dracula">Dracula</option>
-            <option value="vs2015">VS 2015</option>
-            <option value="nord">Nord</option>
-            <option value="solarized-dark">Solarized Dark</option>
-            <option value="tokyo-night">Tokyo Night</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label class="label" for="language">Language</label>
-          <select id="language" class="select">
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
-            <option value="csharp">C#</option>
-            <option value="php">PHP</option>
-            <option value="ruby">Ruby</option>
-            <option value="go">Go</option>
-            <option value="rust">Rust</option>
-            <option value="typescript">TypeScript</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="scss">SCSS</option>
-            <option value="sql">SQL</option>
-            <option value="json">JSON</option>
-            <option value="xml">XML</option>
-            <option value="yaml">YAML</option>
-            <option value="bash">Bash</option>
-            <option value="powershell">PowerShell</option>
-            <option value="dockerfile">Dockerfile</option>
-          </select>
-        </div>
+    <div class="app" x-data="app()">
+      <div class="header">
+        <h1 class="header__heading">Code to HTML Converter</h1>
+        <p class="header__description">
+          Convert your code into beautiful HTML markup for static pages
+        </p>
       </div>
-
-      <div class="code-blocks">
-        <div class="code-blocks__column control-group">
-          <div class="code-blocks__header">
-            <label class="label code-blocks__label" for="input"
-              >Input Code</label
+      <div class="container">
+        <link rel="stylesheet" :href="selectedThemeCssUrl" />
+        <div class="inner">
+          <div class="control-group">
+            <div class="control-group__label">
+              <label class="label" for="highlighter">Highlighter</label>
+            </div>
+            <select
+              class="select"
+              value="selectedHighlighter"
+              @change="onHighlighterChange($event)"
             >
+              <template
+                x-for="highlighter in highlighters"
+                :key="highlighter.id"
+              >
+                <option
+                  :value="highlighter.id"
+                  x-text="highlighter.name"
+                ></option>
+              </template>
+            </select>
           </div>
-          <textarea
-            id="input"
-            class="textarea"
-            placeholder="Paste your code here..."
-          ></textarea>
-        </div>
-        <div class="code-blocks__column control-group">
-          <div class="code-blocks__header">
-            <label class="label code-blocks__label" for="output">Preview</label>
-            <button class="copy-html" onclick="copyToClipboard()">
-              Copy HTML
-            </button>
+          <div class="control-group">
+            <div class="control-group__label">
+              <label class="label" for="theme">Theme</label>
+              <span class="css-size" x-text="cssSize">...</span>
+            </div>
+            <select class="select" x-model="selectedTheme">
+              <template
+                x-for="theme in currentHighlighter.themes"
+                :key="theme.value"
+              >
+                <option
+                  :value="theme.value"
+                  :selected="theme.value === selectedTheme"
+                  x-text="theme.name"
+                ></option>
+              </template>
+            </select>
           </div>
-          <div class="preview" id="output"></div>
-        </div>
-      </div>
-
-      <div class="inner">
-        <div class="instructions">
-          <h3 class="instructions__heading">
-            📋 How to use the generated HTML
-          </h3>
-          <p class="instructions__description">
-            To use the generated HTML markup in your page, you need to include
-            the corresponding CSS theme file in your HTML document's head
-            section:
-          </p>
-
-          <p class="instructions__description">
-            <strong id="highlighter-instruction-title"
-              >For Highlight.js:</strong
+          <div class="control-group">
+            <div class="control-group__label">
+              <label class="label" for="language">Language</label>
+            </div>
+            <select
+              class="select"
+              :value="selectedLanguage"
+              @change="onLanguageChange($event)"
             >
-          </p>
-          <pre id="css-instruction">
-&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"&gt;</pre
-          >
-          <p class="instructions__description">
-            Then simply paste your generated HTML markup wherever you want the
-            code to appear in your page. The styling will be applied
-            automatically!
-          </p>
+              <template
+                x-for="language in currentHighlighter.languages"
+                :key="language.value + language.name"
+              >
+                <option
+                  :value="language.value"
+                  :selected="language.value === selectedLanguage"
+                  x-text="language.name"
+                ></option>
+              </template>
+            </select>
+          </div>
+        </div>
 
-          <div class="alert">
-            <p>
-              <strong>CSS File Size:</strong>
-              <span id="css-size" class="alert__highlighted">Loading...</span>
+        <div class="code-blocks">
+          <div class="code-blocks__column control-group">
+            <div class="code-blocks__header">
+              <label class="label code-blocks__label" for="input"
+                >Input Code</label
+              >
+            </div>
+            <textarea
+              :value="inputCode"
+              @input="onInputCodeChange($event)"
+              class="code-blocks__content textarea"
+              placeholder="Paste your code here..."
+            ></textarea>
+          </div>
+          <div class="code-blocks__column control-group">
+            <div class="code-blocks__header">
+              <label class="label code-blocks__label" for="output"
+                >Preview</label
+              >
+              <button
+                class="copy-html"
+                x-data="copyButton"
+                @click="copy(highlightedCode)"
+                x-text="isCopying ? 'Copied!' : 'Copy HTML'"
+              ></button>
+            </div>
+            <div
+              class="code-blocks__content preview"
+              x-html="highlightedCode"
+            ></div>
+          </div>
+        </div>
+
+        <div class="inner">
+          <div class="instructions">
+            <h3 class="instructions__heading">
+              📋 How to use the generated HTML
+            </h3>
+            <p class="instructions__description">
+              To use the generated HTML markup in your page, you need to include
+              the corresponding CSS theme file in your HTML document's head
+              section:
+            </p>
+
+            <pre>
+              <code x-text="cssInstructionText" x-init="">
+                
+              </code>
+            </pre>
+            <p class="instructions__description">
+              Then simply paste your generated HTML markup wherever you want the
+              code to appear in your page. The styling will be applied
+              automatically!
             </p>
           </div>
         </div>
