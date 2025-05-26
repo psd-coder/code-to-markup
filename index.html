@@ -51,7 +51,11 @@
               <label class="label" for="theme">Theme</label>
               <span class="css-size" x-text="cssSize">...</span>
             </div>
-            <select class="select" x-model="selectedTheme">
+            <select
+              class="select"
+              :value="selectedTheme"
+              @change="onThemeChange($event)"
+            >
               <template
                 x-for="theme in currentHighlighter.themes"
                 :key="theme.value"
@@ -125,13 +129,13 @@
             <h3 class="instructions__heading">
               📋 How to use the generated HTML
             </h3>
-            <p class="instructions__description">
+            <p class="instructions__description" x-show="cssStyles">
               To use the generated HTML markup in your page, you need to include
               the corresponding CSS theme file in your HTML document's head
               section:
             </p>
 
-            <div class="instructions__code-container">
+            <div class="instructions__code-container" x-show="cssStyles">
               <div x-html="hightlightedCssStyles"></div>
               <button
                 class="button button_square instructions__copy-button"
@@ -165,11 +169,10 @@
                 </svg>
               </button>
             </div>
-
             <p class="instructions__description">
-              Then simply paste your generated HTML markup wherever you want the
-              code to appear in your page. The styling will be applied
-              automatically!
+              <span x-text="cssStyles ? 'Then simply' : 'Simply'"></span> paste
+              your generated HTML markup wherever you want the code to appear in
+              your page. The styling will be applied automatically!
             </p>
           </div>
         </div>
