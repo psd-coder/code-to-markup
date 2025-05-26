@@ -1,9 +1,5 @@
 import Alpine from "https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/module.esm.min.js";
-import Highlight from "./higlighters/highlight.mjs";
-import Prism from "./higlighters/prism.mjs";
-import Shiki from "./higlighters/shiki.mjs";
 
-const HIGHLIGHTERS = [Highlight(), Prism(), Shiki()];
 const INITIAL_HIGHLIGHTER = "highlight";
 const INITIAL_LANGUAGE = "yaml";
 const INITIAL_THEME = "night-owl";
@@ -28,13 +24,28 @@ main();
 
 function main() {
   Alpine.data("app", () => {
-    const highlightersMap = Object.fromEntries(
-      HIGHLIGHTERS.map((h) => [h.id, h])
-    );
-
     return {
-      highlighters: HIGHLIGHTERS,
-      highlighterInitializers: {},
+      ready: false,
+      highlighters: {
+        highlight: {
+          name: "Highlight.js",
+          file: "./highlighters/highlight.mjs",
+          module: null,
+          setupPromise: null,
+        },
+        prism: {
+          name: "Prism.js",
+          file: "./highlighters/prism.mjs",
+          module: null,
+          setupPromise: null,
+        },
+        shiki: {
+          name: "Shiki",
+          file: "./highlighters/shiki.mjs",
+          module: null,
+          setupPromise: null,
+        },
+      },
       selectedHighlighter: INITIAL_HIGHLIGHTER,
       selectedTheme: INITIAL_THEME,
       selectedLanguage: INITIAL_LANGUAGE,
@@ -42,7 +53,7 @@ function main() {
       highlightedCode: "",
 
       get currentHighlighter() {
-        return highlightersMap[this.selectedHighlighter];
+        return this.highlighters[this.selectedHighlighter].module;
       },
 
       get selectedThemeCssUrl() {
@@ -60,7 +71,7 @@ function main() {
           return null;
         }
 
-        return highlightersMap.highlight.highlight({
+        return this.highlighters.highlight.module.highlight({
           loadScript,
           code: this.cssStyles,
           language: "xml",
@@ -73,22 +84,28 @@ function main() {
         return url && getCSSFileSize(url);
       },
 
-      init() {
+      async init() {
+        await this.ensureHighlighterInitialized(this.selectedHighlighter);
+        this.ready = true;
         this.highlightCode();
       },
 
-      async ensureHighlighterInitialized() {
-        if (!this.highlighterInitializers[this.selectedHighlighter]) {
-          this.highlighterInitializers[this.selectedHighlighter] =
-            this.currentHighlighter.setup({ loadScript });
+      async ensureHighlighterInitialized(id) {
+        if (!this.highlighters[id].initialized) {
+          const module = await import(this.highlighters[id].file).then(
+            ({ default: module }) => module
+          );
+
+          this.highlighters[id].module = module;
+          this.highlighters[id].setupPromise = module.setup({
+            loadScript,
+          });
         }
 
-        return this.highlighterInitializers[this.selectedHighlighter];
+        return this.highlighters[id].setupPromise;
       },
 
       async highlightCode() {
-        await this.ensureHighlighterInitialized();
-
         if (!this.inputCode.trim()) {
           this.highlightedCode = "";
           return;
@@ -103,6 +120,7 @@ function main() {
       },
 
       async onHighlighterChange(event) {
+        await this.ensureHighlighterInitialized(event.target.value);
         this.selectedHighlighter = event.target.value;
         this.selectedTheme = this.currentHighlighter.defaultTheme;
         this.selectedLanguage = this.currentHighlighter.languages.find(
