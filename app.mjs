@@ -56,32 +56,21 @@ function main() {
         return this.highlighters[this.selectedHighlighter].module;
       },
 
-      get selectedThemeCssUrl() {
+      get currentThemeCssUrl() {
         return this.currentHighlighter.getThemeUrl(this.selectedTheme);
       },
 
       get cssStyles() {
-        const url = this.currentHighlighter.getThemeUrl(this.selectedTheme);
-
-        return url && `<link rel="stylesheet" href="${url}">`;
-      },
-
-      get hightlightedCssStyles() {
-        if (!this.cssStyles) {
-          return null;
-        }
-
-        return this.highlighters.highlight.module.highlight({
-          loadScript,
-          code: this.cssStyles,
-          language: "xml",
-        });
+        return (
+          this.currentThemeCssUrl &&
+          `<link rel="stylesheet" href="${this.currentThemeCssUrl}">`
+        );
       },
 
       get cssSize() {
-        const url = this.currentHighlighter.getThemeUrl(this.selectedTheme);
-
-        return url && getCSSFileSize(url);
+        return (
+          this.currentThemeCssUrl && getCSSFileSize(this.currentThemeCssUrl)
+        );
       },
 
       async init() {

@@ -448,20 +448,22 @@ body {
 /* Night owl highlight.js theme */
 .instructions__code-container {
   position: relative;
+}
 
-  code {
-    background: var(--color-bg-container) !important;
-    border-radius: var(--radius-md) !important;
-    padding-right: 3rem !important;
+.instructions__code {
+  display: block;
+  background: var(--color-bg-container);
+  border-radius: var(--radius-md);
+  padding: var(--size-xs);
+  padding-right: var(--size-xl);
+
+  :where(.attr, .name, .tag) {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-blue);
   }
 
-  :where(.hljs-attr, .hljs-name, .hljs-tag) {
-    font-weight: var(--font-weight-semibold) !important;
-    color: var(--color-blue) !important;
-  }
-
-  .hljs-string {
-    color: var(--color-purple) !important;
+  .string {
+    color: var(--color-purple);
   }
 }
 
