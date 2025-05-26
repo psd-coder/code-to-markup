@@ -1,7 +1,7 @@
 const HIGHLIGHTERS = [HighlightJS(), PrismJS()];
 const INITIAL_HIGHLIGHTER = "highlight";
 const INITIAL_LANGUAGE = "yaml";
-const INITIAL_THEME = "vs2015";
+const INITIAL_THEME = "night-owl";
 const INITIAL_CODE = `# lefthook.yml
 
 # Build commit messages
@@ -42,10 +42,14 @@ document.addEventListener("alpine:init", () => {
         return this.currentHighlighter.getThemeUrl(this.selectedTheme);
       },
 
-      get cssInstructionText() {
+      get cssStyles() {
         return `<link rel="stylesheet" href="${this.currentHighlighter.getThemeUrl(
           this.selectedTheme
         )}">`;
+      },
+
+      get hightlightedCssStyles() {
+        return highlightersMap.highlight.highlight(this.cssStyles, "xml");
       },
 
       get cssSize() {
