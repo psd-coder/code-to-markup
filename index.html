@@ -5,15 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Code to HTML Converter</title>
     <link rel="stylesheet" href="./styles.css" />
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js"
-      defer
-    ></script>
     <!-- Preload highlight js as default highlighter and xml languages for highlighting instructions -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/xml.min.js"></script>
-    <script src="./app.js"></script>
+    <script type="module" src="./app.mjs"></script>
   </head>
   <body>
     <div class="app" x-data="app()">
