@@ -387,8 +387,6 @@ body {
 .preview {
   width: 100%;
   min-height: 200px;
-  max-height: 500px;
-
   font-family: var(--font-mono);
   font-size: var(--font-size-xs);
   line-height: var(--leading-tight);
@@ -397,6 +395,10 @@ body {
 
   transition: all 0.2s ease;
   overflow-y: auto;
+
+  @media (max-width: 920px) {
+    height: 400px;
+  }
 }
 
 .textarea {
@@ -459,6 +461,7 @@ body {
   border-radius: var(--radius-md);
   padding: var(--size-xs);
   padding-right: var(--size-xl);
+  word-break: break-word;
 
   :where(.attr, .name, .tag) {
     font-weight: var(--font-weight-semibold);
