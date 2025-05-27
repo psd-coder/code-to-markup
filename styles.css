@@ -416,6 +416,18 @@ body {
   color: var(--color-text-placeholder);
 }
 
+.preview pre {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+  min-height: 100%;
+}
+
+.preview code {
+  width: 100%;
+}
+
 .preview:empty::before {
   display: block;
   height: 100%;
@@ -423,15 +435,6 @@ body {
   padding: var(--size-xs);
   background: var(--color-bg-dark);
   color: var(--color-text-placeholder);
-}
-
-.preview > pre {
-  height: 100%;
-  margin: 0 !important;
-}
-
-.preview > pre > code {
-  height: 100%;
 }
 
 .instructions {
