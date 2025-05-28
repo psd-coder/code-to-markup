@@ -176,6 +176,10 @@
   scrollbar-color: var(--color-border-secondary) transparent;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 html,
 body {
   color-scheme: dark;

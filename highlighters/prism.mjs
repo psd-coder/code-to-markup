@@ -10,6 +10,7 @@ export default {
   getThemeUrl(theme) {
     return `${this.baseUrl}/themes/${theme}.min.css`;
   },
+
   async highlight({ code, language }) {
     await new Promise((resolve, reject) =>
       window.Prism.plugins.autoloader.loadLanguages(language, resolve, reject)
@@ -20,7 +21,6 @@ export default {
       window.Prism.languages[language],
       language
     );
-
     return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
   },
   defaultTheme: "prism-tomorrow",

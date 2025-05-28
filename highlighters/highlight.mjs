@@ -1,5 +1,4 @@
 export default {
-  name: "Highlight.js",
   baseUrl: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1",
   async setup({ loadScript }) {
     await loadScript(`${this.baseUrl}/highlight.min.js`);
@@ -13,7 +12,7 @@ export default {
 
     return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
   },
-  defaultTheme: "vs2015",
+  defaultTheme: "night-owl",
   themes: [
     { value: "a11y-dark", name: "A11y Dark" },
     { value: "a11y-light", name: "A11y Light" },
