@@ -25,7 +25,10 @@ main();
 function main() {
   Alpine.data("app", () => {
     return {
-      ready: false,
+      isReady: false,
+      isInitializingHightlighter: false,
+      isLoadingTheme: false,
+      isHighlighting: false,
       highlighters: {
         highlight: {
           name: "Highlight.js",
@@ -73,14 +76,23 @@ function main() {
         );
       },
 
+      get isProcessing() {
+        return (
+          this.isInitializingHightlighter ||
+          this.isLoadingTheme ||
+          this.isHighlighting
+        );
+      },
+
       async init() {
         await this.ensureHighlighterInitialized(this.selectedHighlighter);
-        this.ready = true;
+        this.isReady = true;
         this.highlightCode();
       },
 
       async ensureHighlighterInitialized(id) {
         if (!this.highlighters[id].initialized) {
+          this.isInitializingHightlighter = true;
           const module = await import(this.highlighters[id].file).then(
             ({ default: module }) => module
           );
@@ -88,6 +100,9 @@ function main() {
           this.highlighters[id].module = module;
           this.highlighters[id].setupPromise = module.setup({
             loadScript,
+          });
+          this.highlighters[id].setupPromise.then(() => {
+            this.isInitializingHightlighter = false;
           });
         }
 
@@ -100,12 +115,14 @@ function main() {
           return;
         }
 
+        this.isHighlighting = true;
         this.highlightedCode = await this.currentHighlighter.highlight({
           loadScript,
           code: this.inputCode,
           language: this.selectedLanguage,
           theme: this.selectedTheme,
         });
+        this.isHighlighting = false;
       },
 
       async onHighlighterChange(event) {
@@ -120,8 +137,16 @@ function main() {
         this.highlightCode();
       },
 
-      onThemeChange(event) {
+      async onThemeChange(event) {
         this.selectedTheme = event.target.value;
+
+        if (this.currentThemeCssUrl) {
+          this.isLoadingTheme = true;
+          // Prefetch the CSS to ensure it's ready
+          await fetch(this.currentThemeCssUrl);
+          this.isLoadingTheme = false;
+        }
+
         this.highlightCode();
       },
 

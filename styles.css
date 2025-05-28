@@ -308,7 +308,7 @@ body {
 .code-blocks__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
 }
 
 .code-blocks__label {
@@ -329,8 +329,22 @@ body {
   flex-grow: 1;
 }
 
+.code-blocks__processing-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .code-blocks__copy-button {
   width: 8rem;
+  margin-left: auto;
 }
 
 .button {
