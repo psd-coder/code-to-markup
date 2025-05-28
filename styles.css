@@ -200,6 +200,10 @@ body {
   gap: var(--size-lg);
   min-height: 100vh;
   padding: var(--size-xl) var(--size-sm);
+
+  @media (min-width: 921px) and (min-height: 920px) {
+    height: 100vh;
+  }
 }
 
 .header {
@@ -231,6 +235,7 @@ body {
   align-self: center;
   width: 100%;
   max-width: 1400px;
+  min-height: 0;
   background: var(--color-bg-container);
   border-radius: var(--radius-xl);
   box-shadow: 0 25px 50px var(--color-shadow-primary);
@@ -284,6 +289,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: var(--size-md);
   flex-grow: 1;
+  min-height: 0;
 
   @media (max-width: 600px) {
     grid-template-columns: minmax(0, 1fr);
@@ -294,6 +300,7 @@ body {
   flex-grow: 1;
   flex-shrink: 0;
   min-width: 0;
+  min-height: 0;
 }
 
 .code-blocks__header {
@@ -401,7 +408,7 @@ body {
   transition: all 0.2s ease;
   overflow-y: auto;
 
-  @media (max-width: 920px) {
+  @media (max-height: 920px) or (max-width: 920px) {
     height: 400px;
   }
 }
