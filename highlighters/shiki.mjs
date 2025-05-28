@@ -23,7 +23,14 @@ export default {
       ),
     ]);
 
-    return this.shikiInstance.codeToHtml(code, { lang: language, theme });
+    let highlighted = this.shikiInstance.codeToHtml(code, {
+      lang: language,
+      theme,
+    });
+
+    highlighted = highlighted.replace("<code>", '<code style="padding:1em">');
+
+    return highlighted;
   },
   defaultTheme: "vitesse-dark",
   themes: [
