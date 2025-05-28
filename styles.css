@@ -103,6 +103,7 @@
   --color-purple: #a78bfa;
 
   /* Background Colors */
+  --color-bg-body: #16213e;
   --color-bg-container: #1e293b;
   --color-bg-dark: #0f172a;
 
@@ -170,24 +171,9 @@
   );
 }
 
-/* Scrollbar styles */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-secondary) var(--color-bg-dark);
-}
-
-*::-webkit-scrollbar {
-  width: 15px;
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--color-bg-dark);
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: var(--color-border-secondary);
-  border-radius: 14px;
-  border: 3px solid var(--color-bg-dark);
+  scrollbar-color: var(--color-border-secondary) transparent;
 }
 
 html,
@@ -199,7 +185,7 @@ body {
 body {
   font-family: var(--font-sans);
   font-size: var(--font-size-sm);
-  background: var(--gradient-background);
+  background: var(--color-bg-body) var(--gradient-background);
   color: var(--color-text-primary);
   overflow-y: auto;
 }
