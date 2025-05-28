@@ -28,7 +28,10 @@ export default {
       theme,
     });
 
-    highlighted = highlighted.replace("<code>", '<code style="padding:1em">');
+    highlighted = highlighted.replace(
+      "<code>",
+      '<code style="padding:1em;overflow-x: auto;">'
+    );
 
     return highlighted;
   },
