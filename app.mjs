@@ -260,7 +260,7 @@ function getHighlighterFallback(initial) {
   return {
     baseUrl: "",
     getThemeUrl() {
-      return "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/night-owl.min.css";
+      return null;
     },
     setup() {},
     highlight() {},

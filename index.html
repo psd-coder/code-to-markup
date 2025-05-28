@@ -53,7 +53,7 @@
       <div class="control-group">
         <div class="control-group__label">
           <label class="label" for="theme">Theme</label>
-          <span class="css-size" x-text="cssSize">...</span>
+          <span class="css-size" x-text="cssSize"></span>
         </div>
         <select class="select" :value="state.theme" @change="onThemeChange($event)">
           <template x-for="theme in currentHighlighter.themes" :key="theme.value">
