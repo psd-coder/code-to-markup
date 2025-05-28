@@ -340,9 +340,14 @@ body {
   }
 }
 
-.code-blocks__copy-button {
-  width: 8rem;
+.code-blocks__actions {
+  display: flex;
+  gap: var(--size-xs);
   margin-left: auto;
+}
+
+.code-blocks__copy-html {
+  width: 7.5rem;
 }
 
 .button {
@@ -356,6 +361,7 @@ body {
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-md);
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .button_square {
