@@ -91,7 +91,8 @@
               @click="copy(comment + '\n' + highlightedCode)" x-text="isCopying ? 'Copied!' : 'Copy HTML'">Copy
               HTML</button>
           </div>
-          <div class="code-blocks__content preview" x-html="highlightedCode"></div>
+          <div class="code-blocks__content preview preview_fallback" :class="{ 'preview_fallback': isProcessing }"
+            :data-fallback-message="fallbackHighlightedMessage" x-html="highlightedCode"></div>
         </div>
       </div>
 

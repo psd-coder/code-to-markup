@@ -443,10 +443,10 @@ body {
   width: 100%;
 }
 
-.preview:empty::before {
+.preview_fallback::before {
   display: block;
   height: 100%;
-  content: "Highlighted code preview will appear here...";
+  content: attr(data-fallback-message, "Highlighted code will appear here...");
   padding: var(--size-xs);
   background: var(--color-bg-dark);
   color: var(--color-text-placeholder);

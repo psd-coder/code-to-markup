@@ -100,6 +100,22 @@ function main() {
         );
       },
 
+      get fallbackHighlightedMessage() {
+        if (this.isInitializingHightlighter) {
+          return "Loading highlighter...";
+        }
+
+        if (this.isHighlighting) {
+          return "Highlighting code...";
+        }
+
+        if (this.isLoadingTheme) {
+          return "Loading theme...";
+        }
+
+        return null;
+      },
+
       async init() {
         await this.ensureHighlighterInitialized(this.selectedHighlighter);
         this.highlightCode();
