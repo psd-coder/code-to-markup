@@ -79,8 +79,8 @@
         <div class="code-blocks__header">
           <label class="label code-blocks__label" for="input">Input Code</label>
         </div>
-        <textarea id="input" :value="state.code" @input="onCodeChange($event)" class="code-blocks__content textarea"
-          placeholder="Paste your code here..."></textarea>
+        <textarea id="input" :value="state.code" @input.debounce.500ms="onCodeChange($event)"
+          class="code-blocks__content textarea" placeholder="Paste your code here..."></textarea>
       </div>
       <div class="code-blocks__column control-group">
         <div class="code-blocks__header">
