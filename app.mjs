@@ -129,14 +129,6 @@ function main() {
             ({ default: module }) => module
           );
 
-          // If selected theme or language is not available, set to defaults
-          if (!module.themes.find((t) => t.value === this.state.theme)) {
-            this.state.theme = module.defaultTheme;
-          }
-          if (!module.languages.find((l) => l.value === this.state.language)) {
-            this.state.language = module.languages[0].value;
-          }
-
           this.highlighters[id].module = module;
           this.highlighters[id].setupPromise = module.setup({
             loadScript,
@@ -171,7 +163,11 @@ function main() {
       async onHighlighterChange(event) {
         await this.ensureHighlighterInitialized(event.target.value);
         this.state.highlighter = event.target.value;
-        this.state.theme = this.currentHighlighter.defaultTheme;
+        this.state.theme = this.currentHighlighter.themes.find(
+          (t) => t.value === this.state.theme
+        )
+          ? this.state.theme
+          : this.currentHighlighter.defaultTheme;
         this.state.language = this.currentHighlighter.languages.find(
           (l) => l.value === this.state.language
         )
