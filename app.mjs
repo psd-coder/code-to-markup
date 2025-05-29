@@ -141,23 +141,31 @@ function main() {
         return this.highlighters[id].setupPromise;
       },
 
-      async updateURLAndHighlight() {
+      async updateURLAndHighlight(options) {
         updateURLAndLocalStorage(this.state);
-        return this.highlightCode();
+        return this.highlightCode(options);
       },
 
-      async highlightCode() {
+      async highlightCode(options) {
+        const opts = Object.assign({}, { toggleLoadingState: true }, options);
+
         if (!this.state.code.trim()) {
           this.highlightedCode = "";
           return;
         }
 
-        this.isHighlighting = true;
+        if (opts.toggleLoadingState) {
+          this.isHighlighting = true;
+        }
+
         this.highlightedCode = await this.currentHighlighter.highlight({
           ...this.state,
           loadScript,
         });
-        this.isHighlighting = false;
+
+        if (opts.toggleLoadingState) {
+          this.isHighlighting = false;
+        }
       },
 
       async onHighlighterChange(event) {
@@ -196,7 +204,7 @@ function main() {
 
       onCodeChange(event) {
         this.state.code = event.target.value;
-        this.updateURLAndHighlight();
+        this.updateURLAndHighlight({ toggleLoadingState: false });
       },
     };
   });
