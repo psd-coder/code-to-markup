@@ -44,7 +44,7 @@
         <div class="control-group__label">
           <label class="label" for="highlighter">Highlighter</label>
         </div>
-        <select class="select" :value="state.highlighter" @change="onHighlighterChange($event)">
+        <select id="highlighter" class="select" :value="state.highlighter" @change="onHighlighterChange($event)">
           <template x-for="(highlighter, id) in highlighters" :key="id">
             <option :value="id" :selected="id === state.highlighter" x-text="highlighter.name"></option>
           </template>
@@ -55,7 +55,7 @@
           <label class="label" for="theme">Theme</label>
           <span class="css-size" x-text="cssSize"></span>
         </div>
-        <select class="select" :value="state.theme" @change="onThemeChange($event)">
+        <select id="theme" class="select" :value="state.theme" @change="onThemeChange($event)">
           <template x-for="theme in currentHighlighter.themes" :key="theme.value">
             <option :value="theme.value" :selected="theme.value === state.theme" x-text="theme.name"></option>
           </template>
@@ -65,7 +65,7 @@
         <div class="control-group__label">
           <label class="label" for="language">Language</label>
         </div>
-        <select class="select" :value="state.language" @change="onLanguageChange($event)">
+        <select id="language" class="select" :value="state.language" @change="onLanguageChange($event)">
           <template x-for="language in currentHighlighter.languages" :key="language.value + language.name">
             <option :value="language.value" :selected="language.value === state.language" x-text="language.name">
             </option>
@@ -79,12 +79,12 @@
         <div class="code-blocks__header">
           <label class="label code-blocks__label" for="input">Input Code</label>
         </div>
-        <textarea :value="state.code" @input="onCodeChange($event)" class="code-blocks__content textarea"
+        <textarea id="input" :value="state.code" @input="onCodeChange($event)" class="code-blocks__content textarea"
           placeholder="Paste your code here..."></textarea>
       </div>
       <div class="code-blocks__column control-group">
         <div class="code-blocks__header">
-          <label class="label code-blocks__label" for="output">Preview</label>
+          <label class="label code-blocks__label">Preview</label>
           <svg x-show="isProcessing" class="code-blocks__processing-icon" xmlns="http://www.w3.org/2000/svg" width="20"
             height="20" viewBox="0 0 256 256" fill="currentColor">
             <path
