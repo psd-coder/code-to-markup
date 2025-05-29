@@ -452,7 +452,7 @@ body {
 .preview_fallback::before {
   display: block;
   height: 100%;
-  content: attr(data-fallback-message, "Highlighted code will appear here...");
+  content: attr(data-fallback-message);
   padding: var(--size-xs);
   background: var(--color-bg-dark);
   color: var(--color-text-placeholder);

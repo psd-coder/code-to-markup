@@ -108,7 +108,8 @@
             </button>
           </div>
         </div>
-        <div class="code-blocks__content preview preview_fallback" :class="{ 'preview_fallback': isProcessing }"
+        <div class="code-blocks__content preview preview_fallback"
+          :class="{ 'preview_fallback': isProcessing || !highlightedCode }"
           :data-fallback-message="fallbackHighlightedMessage" x-html="isProcessing ? '' : highlightedCode"></div>
       </div>
     </div>

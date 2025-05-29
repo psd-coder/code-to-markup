@@ -109,7 +109,7 @@ function main() {
           return "Loading theme...";
         }
 
-        return null;
+        return "Highlighted code will appear here...";
       },
 
       async init() {
