@@ -277,27 +277,34 @@ function getHighlighterFallback(initial) {
 
 function getInitialState(availableHighlighters, fallback) {
   const urlParams = new URLSearchParams(window.location.search);
-  const initialState = {};
+  const initialState = { code: "" };
+
+  try {
+    initialState.code = urlSafeAtob(window.location.hash.slice(1));
+  } catch {}
 
   Object.keys(STATE_TO_SEARCH_PARAMS).forEach((key) => {
-    let searchParam = urlParams.get(STATE_TO_SEARCH_PARAMS[key]);
+    let value =
+      urlParams.get(STATE_TO_SEARCH_PARAMS[key]) ||
+      window.localStorage.getItem(key);
 
+    // Use fallback if unsupported highlighter is specified
     if (
-      searchParam &&
       key === "highlighter" &&
-      !availableHighlighters.includes(searchParam)
+      value &&
+      !availableHighlighters.includes(value)
     ) {
-      searchParam = null;
+      value = null;
     }
 
-    initialState[key] =
-      searchParam || window.localStorage.getItem(key) || fallback[key];
+    initialState[key] = value || fallback[key];
   });
 
-  const codeHash = window.location.hash.slice(1);
-  initialState.code = codeHash
-    ? urlSafeAtob(codeHash)
-    : window.localStorage.getItem("code") || fallback.code;
+  // If code is not specified, use our fallback code for the selected language
+  if (!initialState.code) {
+    initialState.code = fallback.code;
+    initialState.language = fallback.language;
+  }
 
   return initialState;
 }
