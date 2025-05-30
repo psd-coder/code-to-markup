@@ -1,14 +1,25 @@
 export default {
-  baseUrl: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1",
-  async setup({ loadScript }) {
-    await loadScript(`${this.baseUrl}/highlight.min.js`);
+  baseUrl: "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1",
+  highlightInstance: null,
+  async setup() {
+    this.highlightInstance = await import(`${this.baseUrl}/+esm`).then(
+      (m) => m.default
+    );
   },
   getThemeUrl(theme) {
     return `${this.baseUrl}/styles/${theme}.min.css`;
   },
-  async highlight({ loadScript, code, language }) {
-    await loadScript(`${this.baseUrl}/languages/${language}.min.js`);
-    const highlighted = window.hljs.highlight(code, { language }).value;
+  async highlight({ code, language }) {
+    this.highlightInstance.registerLanguage(
+      language,
+      await import(`${this.baseUrl}/es/languages/${language}.js`).then(
+        (m) => m.default
+      )
+    );
+
+    const highlighted = this.highlightInstance.highlight(code, {
+      language,
+    }).value;
 
     return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
   },

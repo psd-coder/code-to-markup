@@ -1,5 +1,5 @@
 export default {
-  baseUrl: "https://esm.sh/shiki@3.4.2",
+  baseUrl: "https://cdn.jsdelivr.net/npm/shiki@3.4.2",
   shikiInstance: null,
   getThemeUrl() {
     return null;
@@ -7,19 +7,21 @@ export default {
   async setup() {
     const [{ createHighlighterCore }, { createOnigurumaEngine }] =
       await Promise.all([
-        import(`${this.baseUrl}/bundle/web`),
-        import(`${this.baseUrl}/engine/oniguruma`),
+        import(`${this.baseUrl}/bundle-web/+esm`),
+        import(`${this.baseUrl}/engine-oniguruma/+esm`),
       ]);
 
     this.shikiInstance = await createHighlighterCore({
-      engine: createOnigurumaEngine(import(`${this.baseUrl}/wasm`)),
+      engine: createOnigurumaEngine(import(`${this.baseUrl}/wasm/+esm`)),
     });
   },
   async highlight({ code, language, theme }) {
     await Promise.all([
-      this.shikiInstance.loadTheme(import(`${this.baseUrl}/themes/${theme}`)),
+      this.shikiInstance.loadTheme(
+        import(`${this.baseUrl}/themes/${theme}/+esm`)
+      ),
       this.shikiInstance.loadLanguage(
-        import(`${this.baseUrl}/langs/${language}`)
+        import(`${this.baseUrl}/langs/${language}/+esm`)
       ),
     ]);
 
@@ -55,10 +57,7 @@ export default {
     { value: "github-dark-high-contrast", name: "GitHub Dark High Contrast" },
     { value: "github-light", name: "GitHub Light" },
     { value: "github-light-default", name: "GitHub Light Default" },
-    {
-      value: "github-light-high-contrast",
-      name: "GitHub Light High Contrast",
-    },
+    { value: "github-light-high-contrast", name: "GitHub Light High Contrast" },
     { value: "gruvbox-dark-hard", name: "Gruvbox Dark Hard" },
     { value: "gruvbox-dark-medium", name: "Gruvbox Dark Medium" },
     { value: "gruvbox-dark-soft", name: "Gruvbox Dark Soft" },

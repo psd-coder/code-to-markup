@@ -1,5 +1,5 @@
 export default {
-  baseUrl: "https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0",
+  baseUrl: "https://cdn.jsdelivr.net/npm/prismjs@1.30.0",
   async setup({ loadScript }) {
     await loadScript(`${this.baseUrl}/components/prism-core.min.js`);
     await loadScript(

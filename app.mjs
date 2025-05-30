@@ -1,4 +1,4 @@
-import Alpine from "https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/module.esm.min.js";
+import Alpine from "https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/+esm";
 
 const APP_URL = "https://psd-coder.github.io/code-to-markup/";
 const FALLBACK_HIGHLIGHTER = "highlight";
