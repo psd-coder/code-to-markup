@@ -119,13 +119,13 @@
         <h3 class="instructions__heading">
           📋 How to use the generated HTML
         </h3>
-        <p class="instructions__description" x-show="cssStyles">
+        <p class="instructions__description" x-show="cssStyles" x-cloak>
           To use the generated HTML markup in your page, you need to
           include the corresponding CSS theme file in your HTML document's
           head section:
         </p>
 
-        <div class="instructions__code-container" x-show="cssStyles">
+        <div class="instructions__code-container" x-show="cssStyles" x-cloak>
           <code class="instructions__code">
               <span class="tag">&lt;<span class="name">link</span>
               <span class="attr">rel</span>=<span class="string"
@@ -147,7 +147,7 @@
           </button>
         </div>
         <p class="instructions__description">
-          <span x-text="cssStyles ? 'Then simply' : 'Simply'">Then simply</span>
+          <span x-text="cssStyles ? 'Then simply' : 'Simply'">Simply</span>
           paste your generated HTML markup wherever you want the code to
           appear in your page. The styling will be applied automatically!
         </p>

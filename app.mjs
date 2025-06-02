@@ -1,11 +1,17 @@
 import Alpine from "https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/+esm";
 
 const APP_URL = "https://psd-coder.github.io/code-to-markup/";
-const FALLBACK_HIGHLIGHTER = "highlight";
+const FALLBACK_HIGHLIGHTER = "shiki";
 const FALLBACK_LANGUAGE = "yaml";
-const FALLBACK_THEME = "night-owl";
+const FALLBACK_THEME = "github-dark";
 const STATE_TO_SEARCH_PARAMS = { highlighter: "h", theme: "t", language: "l" };
 const HIGHLIGHTERS = {
+  shiki: {
+    name: "Shiki",
+    file: "./highlighters/shiki.mjs",
+    module: null,
+    setupPromise: null,
+  },
   highlight: {
     name: "Highlight.js",
     file: "./highlighters/highlight.mjs",
@@ -15,12 +21,6 @@ const HIGHLIGHTERS = {
   prism: {
     name: "Prism.js",
     file: "./highlighters/prism.mjs",
-    module: null,
-    setupPromise: null,
-  },
-  shiki: {
-    name: "Shiki",
-    file: "./highlighters/shiki.mjs",
     module: null,
     setupPromise: null,
   },
