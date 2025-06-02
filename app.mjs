@@ -217,7 +217,18 @@ function main() {
       }
 
       this.isCopying = true;
-      await navigator.clipboard.writeText(data);
+
+      if (!navigator.clipboard.write) {
+        await navigator.clipboard.writeText(data);
+      } else {
+        const itemRecords = { "text/plain": data };
+
+        if (this.$el.hasAttribute("data-as-html")) {
+          itemRecords["text/html"] = data;
+        }
+
+        await navigator.clipboard.write([new ClipboardItem(itemRecords)]);
+      }
 
       setTimeout(() => {
         this.isCopying = false;

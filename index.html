@@ -92,7 +92,8 @@
           </svg>
           <div class="code-blocks__actions">
             <button class="button code-blocks__copy-html" x-data="copyButton"
-              @click="copy(getHighligtedCodeForCopying())" x-text="isCopying ? 'Copied!' : 'Copy HTML'">Copy
+              @click="copy(getHighligtedCodeForCopying())" x-text="isCopying ? 'Copied!' : 'Copy HTML'"
+              data-as-html>Copy
               HTML</button>
             <button class="button button_square" x-data="copyButton" @click="copy(window.location.href)">
               <svg x-show="!isCopying" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
