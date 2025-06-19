@@ -200,7 +200,11 @@ function main() {
       async ensureHighlighterInitialized(id) {
         if (!this.highlighters[id].initialized) {
           this.highlighterState = HIGHLIGHTER_STATE.INITIALIZING;
-          const module = await loadModule(this.highlighters[id].file).then(
+          const highlighterUrl = new URL(
+            this.highlighters[id].file,
+            import.meta.url
+          ).toString();
+          const module = await loadModule(highlighterUrl).then(
             ({ default: module }) => module
           );
 
