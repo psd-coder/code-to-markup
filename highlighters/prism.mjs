@@ -7,15 +7,22 @@ export default {
     );
     window.Prism.plugins.autoloader.languages_path = `${this.baseUrl}/components/`;
   },
-  getThemeUrl(theme) {
-    return `${this.baseUrl}/themes/${theme}.min.css`;
-  },
+  async loadTheme(theme) {
+    const url = `${this.baseUrl}/themes/${theme}.min.css`;
 
-  async highlight({ code, language }) {
-    await new Promise((resolve, reject) =>
+    return fetch(url)
+      .then(async (res) => ({
+        styles: await res.text(),
+        size: res.headers.get("Content-Length"),
+      }))
+      .then(({ styles, size }) => ({ isCss: true, url, styles, size }));
+  },
+  async loadLanguage(language) {
+    return new Promise((resolve, reject) =>
       window.Prism.plugins.autoloader.loadLanguages(language, resolve, reject)
     );
-
+  },
+  async highlight({ code, language }) {
     const highlighted = window.Prism.highlight(
       code,
       window.Prism.languages[language],

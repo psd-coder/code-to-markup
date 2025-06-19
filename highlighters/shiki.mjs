@@ -1,9 +1,6 @@
 export default {
   baseUrl: "https://cdn.jsdelivr.net/npm/shiki@3.4.2",
   shikiInstance: null,
-  getThemeUrl() {
-    return null;
-  },
   async setup() {
     const [{ createHighlighterCore }, { createOnigurumaEngine }] =
       await Promise.all([
@@ -15,16 +12,17 @@ export default {
       engine: createOnigurumaEngine(import(`${this.baseUrl}/wasm/+esm`)),
     });
   },
+  async loadTheme(theme) {
+    return this.shikiInstance
+      .loadTheme(import(`${this.baseUrl}/themes/${theme}/+esm`))
+      .then(() => ({ isCSS: false }));
+  },
+  async loadLanguage(language) {
+    return this.shikiInstance.loadLanguage(
+      import(`${this.baseUrl}/langs/${language}/+esm`)
+    );
+  },
   async highlight({ code, language, theme }) {
-    await Promise.all([
-      this.shikiInstance.loadTheme(
-        import(`${this.baseUrl}/themes/${theme}/+esm`)
-      ),
-      this.shikiInstance.loadLanguage(
-        import(`${this.baseUrl}/langs/${language}/+esm`)
-      ),
-    ]);
-
     let highlighted = this.shikiInstance.codeToHtml(code, {
       lang: language,
       theme,
