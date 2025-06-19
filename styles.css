@@ -99,8 +99,9 @@
 
 :root {
   /* Primary Colors */
-  --color-blue: #60a5fa;
-  --color-purple: #a78bfa;
+  --color-brand-blue: #60a5fa;
+  --color-brand-purple: #a78bfa;
+  --color-danger: #f87171;
 
   /* Background Colors */
   --color-bg-body: #16213e;
@@ -160,8 +161,8 @@
   /* Gradients */
   --gradient-primary: linear-gradient(
     135deg,
-    var(--color-blue),
-    var(--color-purple)
+    var(--color-brand-blue),
+    var(--color-brand-purple)
   );
   --gradient-background: linear-gradient(
     135deg,
@@ -243,7 +244,7 @@ body {
 
 .select:focus {
   outline: none;
-  border-color: var(--color-blue);
+  border-color: var(--color-brand-blue);
 }
 
 .select:hover {
@@ -300,15 +301,37 @@ body {
   }
 }
 
-.container {
+.width-container {
   display: flex;
+  min-height: 0;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.offline-indicator {
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-xs);
+  padding: var(--size-xs) var(--size-sm);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+  border-radius: var(--radius-md);
+  color: oklch(from var(--color-danger) calc(l + 0.5) c h);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.offline-indicator__icon {
+  flex-shrink: 0;
+  color: oklch(from var(--color-danger) calc(l + 0.5) c h / 0.4);
+}
+
+.container {
   flex-direction: column;
   flex-grow: 1;
   gap: var(--size-lg);
   align-self: center;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 0;
   background: var(--color-bg-container);
   border-radius: var(--radius-xl);
   box-shadow: 0 25px 50px var(--color-shadow-primary);
@@ -346,7 +369,7 @@ body {
 .css-size {
   font-family: var(--font-mono);
   font-weight: var(--font-weight-bold);
-  color: var(--color-blue);
+  color: var(--color-brand-blue);
 }
 
 .label {
@@ -451,7 +474,7 @@ body {
 
 .textarea:focus {
   outline: none;
-  border-color: var(--color-blue);
+  border-color: var(--color-brand-blue);
 }
 
 .textarea::placeholder {
@@ -487,7 +510,7 @@ body {
 }
 
 .instructions__heading {
-  color: var(--color-blue);
+  color: var(--color-brand-blue);
   font-size: var(--font-size-xl);
 }
 
@@ -506,11 +529,11 @@ body {
 
   :where(.attr, .name, .tag) {
     font-weight: var(--font-weight-semibold);
-    color: var(--color-blue);
+    color: var(--color-brand-blue);
   }
 
   .string {
-    color: var(--color-purple);
+    color: var(--color-brand-purple);
   }
 }
 
