@@ -1,22 +1,29 @@
 export default {
   baseUrl: "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1",
   highlightInstance: null,
-  async setup() {
-    this.highlightInstance = await import(`${this.baseUrl}/+esm`).then(
+  async setup({ loadModule }) {
+    this.highlightInstance = await loadModule(`${this.baseUrl}/+esm`).then(
       (m) => m.default
     );
   },
-  getThemeUrl(theme) {
-    return `${this.baseUrl}/styles/${theme}.min.css`;
+  async loadTheme(theme) {
+    const url = `${this.baseUrl}/styles/${theme}.min.css`;
+
+    return fetch(url)
+      .then(async (res) => ({
+        styles: await res.text(),
+        size: res.headers.get("Content-Length"),
+      }))
+      .then(({ styles, size }) => ({ isCss: true, url, styles, size }));
+  },
+  async loadLanguage(language, { loadModule }) {
+    return loadModule(`${this.baseUrl}/es/languages/${language}.js`).then(
+      (m) => {
+        this.highlightInstance.registerLanguage(language, m.default);
+      }
+    );
   },
   async highlight({ code, language }) {
-    this.highlightInstance.registerLanguage(
-      language,
-      await import(`${this.baseUrl}/es/languages/${language}.js`).then(
-        (m) => m.default
-      )
-    );
-
     const highlighted = this.highlightInstance.highlight(code, {
       language,
     }).value;

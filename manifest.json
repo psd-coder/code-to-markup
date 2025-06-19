@@ -1,0 +1,31 @@
+{
+  "name": "Code to Markup",
+  "short_name": "Code2Markup",
+  "description": "Convert your code snippets into beautifully highlighted HTML markup for static websites, blogs, and documentation. A powerful web tool that supports multiple syntax highlighters and themes.",
+  "start_url": ".",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape-primary",
+  "lang": "en",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "categories": ["productivity", "developer", "utilities"],
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
