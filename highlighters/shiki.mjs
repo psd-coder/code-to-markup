@@ -1,25 +1,25 @@
 export default {
   baseUrl: "https://cdn.jsdelivr.net/npm/shiki@3.4.2",
   shikiInstance: null,
-  async setup() {
+  async setup({ loadModule }) {
     const [{ createHighlighterCore }, { createOnigurumaEngine }] =
       await Promise.all([
-        import(`${this.baseUrl}/bundle-web/+esm`),
-        import(`${this.baseUrl}/engine-oniguruma/+esm`),
+        loadModule(`${this.baseUrl}/bundle-web/+esm`),
+        loadModule(`${this.baseUrl}/engine-oniguruma/+esm`),
       ]);
 
     this.shikiInstance = await createHighlighterCore({
-      engine: createOnigurumaEngine(import(`${this.baseUrl}/wasm/+esm`)),
+      engine: createOnigurumaEngine(loadModule(`${this.baseUrl}/wasm/+esm`)),
     });
   },
-  async loadTheme(theme) {
+  async loadTheme(theme, { loadModule }) {
     return this.shikiInstance
-      .loadTheme(import(`${this.baseUrl}/themes/${theme}/+esm`))
+      .loadTheme(loadModule(`${this.baseUrl}/themes/${theme}/+esm`))
       .then(() => ({ isCSS: false }));
   },
-  async loadLanguage(language) {
+  async loadLanguage(language, { loadModule }) {
     return this.shikiInstance.loadLanguage(
-      import(`${this.baseUrl}/langs/${language}/+esm`)
+      loadModule(`${this.baseUrl}/langs/${language}/+esm`)
     );
   },
   async highlight({ code, language, theme }) {
