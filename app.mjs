@@ -36,13 +36,17 @@ commit-msg:
   commands:
     "lint commit message":
       run: yarn run commitlint --edit {1}`;
-const HIGHLIGHTER_STATE = {
+const HIGHLIGHTER_STATUS = {
   IDLE: "IDLE",
   INITIALIZING: "INITIALIZING",
+  FAILED: "FAILED",
+};
+const HIGHLIGHTING_STATUS = {
+  IDLE: "IDLE",
   HIGHLIGHTING: "HIGHLIGHTING",
   FAILED: "FAILED",
 };
-const LOADING_STATE = {
+const LOADING_STATUS = {
   LOADED: "LOADED",
   LOADING: "LOADING",
   FAILED: "FAILED",
@@ -70,9 +74,10 @@ function main() {
         };
         return acc;
       }, {}),
-      highlighterState: HIGHLIGHTER_STATE.IDLE,
-      themeLoadingState: LOADING_STATE.LOADED,
-      languageLoadingState: LOADING_STATE.LOADED,
+      highlighterStatus: HIGHLIGHTER_STATUS.IDLE,
+      highlightingStatus: HIGHLIGHTING_STATUS.IDLE,
+      themeLoadingStatus: LOADING_STATUS.LOADED,
+      languageLoadingStatus: LOADING_STATUS.LOADED,
       isOnline: navigator.onLine,
       state: initialState,
       output: {
@@ -89,49 +94,54 @@ function main() {
 
       get isProcessing() {
         return (
-          this.highlighterState === HIGHLIGHTER_STATE.INITIALIZING ||
-          this.highlighterState === HIGHLIGHTER_STATE.HIGHLIGHTING ||
-          this.themeLoadingState === LOADING_STATE.LOADING ||
-          this.languageLoadingState === LOADING_STATE.LOADING
+          this.highlighterStatus === HIGHLIGHTER_STATUS.INITIALIZING ||
+          this.highlightingStatus === HIGHLIGHTING_STATUS.HIGHLIGHTING ||
+          this.themeLoadingStatus === LOADING_STATUS.LOADING ||
+          this.languageLoadingStatus === LOADING_STATUS.LOADING
         );
       },
 
       get showFallback() {
         return (
           this.isProcessing ||
-          this.highlighterState === HIGHLIGHTER_STATE.FAILED ||
-          this.themeLoadingState === LOADING_STATE.FAILED ||
-          this.languageLoadingState === LOADING_STATE.FAILED ||
+          this.highlighterStatus === HIGHLIGHTER_STATUS.FAILED ||
+          this.highlightingStatus === HIGHLIGHTING_STATUS.FAILED ||
+          this.themeLoadingStatus === LOADING_STATUS.FAILED ||
+          this.languageLoadingStatus === LOADING_STATUS.FAILED ||
           !this.output.code
         );
       },
 
       get fallbackHighlightedMessage() {
-        if (this.highlighterState === HIGHLIGHTER_STATE.INITIALIZING) {
+        if (this.highlighterStatus === HIGHLIGHTER_STATUS.INITIALIZING) {
           return "Loading highlighter...";
         }
 
-        if (this.highlighterState === HIGHLIGHTER_STATE.HIGHLIGHTING) {
+        if (this.highlighterStatus === HIGHLIGHTER_STATUS.FAILED) {
+          return `Failed to load highlighter "${this.state.highlighter}". Please check your internet connection or try a different highlighter.`;
+        }
+
+        if (this.highlightingStatus === HIGHLIGHTING_STATUS.HIGHLIGHTING) {
           return "Highlighting code...";
         }
 
-        if (this.highlighterState === HIGHLIGHTER_STATE.FAILED) {
+        if (this.highlightingStatus === HIGHLIGHTING_STATUS.FAILED) {
           return `Failed to highlight code with "${this.state.highlighter}", language "${this.state.language}", theme "${this.state.theme}". Please check your internet connection or try a different highlighter.`;
         }
 
-        if (this.themeLoadingState === LOADING_STATE.FAILED) {
+        if (this.themeLoadingStatus === LOADING_STATUS.FAILED) {
           return `Failed to load theme "${this.state.theme}". Please check your internet connection or try a different theme.`;
         }
 
-        if (this.languageLoadingState === LOADING_STATE.FAILED) {
+        if (this.languageLoadingStatus === LOADING_STATUS.FAILED) {
           return `Failed to load language "${this.state.language}". Please check your internet connection or try a different language.`;
         }
 
-        if (this.languageLoadingState === LOADING_STATE.LOADING) {
+        if (this.languageLoadingStatus === LOADING_STATUS.LOADING) {
           return `Loading language "${this.state.language}"...`;
         }
 
-        if (this.themeLoadingState === LOADING_STATE.LOADING) {
+        if (this.themeLoadingStatus === LOADING_STATUS.LOADING) {
           return `Loading theme "${this.state.theme}"...`;
         }
 
@@ -141,7 +151,6 @@ function main() {
       async init() {
         this.trackOffline();
         await this.ensureHighlighterInitialized(this.state.highlighter);
-        await this.ensureThemeAndLanguageLoaded();
         this.highlightCode();
       },
 
@@ -173,25 +182,31 @@ function main() {
           this.isOnline = false;
         }
 
+        if (!this.isOnline) {
+          return;
+        }
+
         let needHighlight = false;
 
-        if (
-          this.isOnline &&
-          this.languageLoadingState === LOADING_STATE.FAILED
-        ) {
+        if (this.highlighterStatus === HIGHLIGHTER_STATUS.FAILED) {
+          needHighlight = true;
+          await this.ensureHighlighterInitialized(this.state.highlighter);
+        }
+
+        if (this.languageLoadingStatus === LOADING_STATUS.FAILED) {
           needHighlight = true;
           await this.handleLanguageChange();
         }
 
-        if (this.isOnline && this.themeLoadingState === LOADING_STATE.FAILED) {
+        if (this.themeLoadingStatus === LOADING_STATUS.FAILED) {
           needHighlight = true;
           await this.handleThemeChange();
         }
 
         if (
           needHighlight &&
-          this.languageLoadingState === LOADING_STATE.LOADED &&
-          this.themeLoadingState === LOADING_STATE.LOADED
+          this.languageLoadingStatus === LOADING_STATUS.LOADED &&
+          this.themeLoadingStatus === LOADING_STATUS.LOADED
         ) {
           this.updateURLAndHighlight();
         }
@@ -199,29 +214,47 @@ function main() {
 
       async ensureHighlighterInitialized(id) {
         if (!this.highlighters[id].initialized) {
-          this.highlighterState = HIGHLIGHTER_STATE.INITIALIZING;
-          const highlighterUrl = new URL(
-            this.highlighters[id].file,
-            import.meta.url
-          ).toString();
-          const module = await loadModule(highlighterUrl).then(
-            ({ default: module }) => module
-          );
+          try {
+            this.highlighterStatus = HIGHLIGHTER_STATUS.INITIALIZING;
+            const highlighterUrl = new URL(
+              this.highlighters[id].file,
+              import.meta.url
+            ).toString();
+            const module = await loadModule(highlighterUrl).then(
+              ({ default: module }) => module
+            );
 
-          this.highlighters[id].module = module;
-          this.highlighters[id].setupPromise = module.setup({
-            loadScript,
-            loadModule,
-          });
-          this.highlighters[id].setupPromise.then(() => {
-            this.highlighterState = HIGHLIGHTER_STATE.IDLE;
-          });
+            this.highlighters[id].module = module;
+            this.highlighters[id].setupPromise = module.setup({
+              loadScript,
+              loadModule,
+            });
+
+            await this.highlighters[id].setupPromise;
+            this.highlighters[id].initialized = true;
+            await this.ensureThemeAndLanguageLoaded();
+            this.highlighterStatus = HIGHLIGHTER_STATUS.IDLE;
+          } catch {
+            console.error("Failed to initialize highlighter:", id);
+            this.highlighterStatus = HIGHLIGHTER_STATUS.FAILED;
+          }
         }
 
         return this.highlighters[id].setupPromise;
       },
 
       async ensureThemeAndLanguageLoaded() {
+        this.state.theme = this.currentHighlighter.themes.find(
+          (t) => t.value === this.state.theme
+        )
+          ? this.state.theme
+          : this.currentHighlighter.defaultTheme;
+        this.state.language = this.currentHighlighter.languages.find(
+          (l) => l.value === this.state.language
+        )
+          ? this.state.language
+          : this.currentHighlighter.languages[0].value;
+
         return Promise.all([
           this.handleThemeChange(),
           this.handleLanguageChange(),
@@ -243,7 +276,7 @@ function main() {
 
         try {
           if (opts.toggleLoadingState) {
-            this.highlighterState = HIGHLIGHTER_STATE.HIGHLIGHTING;
+            this.highlightingStatus = HIGHLIGHTING_STATUS.HIGHLIGHTING;
           }
 
           this.output.code = await this.currentHighlighter.highlight({
@@ -254,11 +287,11 @@ function main() {
           // This is hack for https://github.com/alpinejs/alpine/blob/main/packages/alpinejs/src/directives/x-show.js,
           // otherwise it get's crazy about isProcessing state switch back and forth and starts showing icon incorrectly
           requestAnimationFrame(
-            () => (this.highlighterState = HIGHLIGHTER_STATE.IDLE)
+            () => (this.highlightingStatus = HIGHLIGHTING_STATUS.IDLE)
           );
         } catch {
           console.error("Failed to highlight code:", this.state);
-          this.highlighterState = HIGHLIGHTER_STATE.FAILED;
+          this.highlightingStatus = HIGHLIGHTING_STATUS.FAILED;
         }
       },
 
@@ -270,18 +303,8 @@ function main() {
       },
 
       async onHighlighterChange(event) {
-        await this.ensureHighlighterInitialized(event.target.value);
         this.state.highlighter = event.target.value;
-        this.state.theme = this.currentHighlighter.themes.find(
-          (t) => t.value === this.state.theme
-        )
-          ? this.state.theme
-          : this.currentHighlighter.defaultTheme;
-        this.state.language = this.currentHighlighter.languages.find(
-          (l) => l.value === this.state.language
-        )
-          ? this.state.language
-          : this.currentHighlighter.languages[0].value;
+        await this.ensureHighlighterInitialized(event.target.value);
         await this.ensureThemeAndLanguageLoaded();
         this.updateURLAndHighlight();
       },
@@ -294,7 +317,7 @@ function main() {
 
       async handleThemeChange() {
         try {
-          this.themeLoadingState = LOADING_STATE.LOADING;
+          this.themeLoadingStatus = LOADING_STATUS.LOADING;
           this.output.cssTheme = null;
           const theme = await this.currentHighlighter.loadTheme(
             this.state.theme,
@@ -309,10 +332,10 @@ function main() {
             };
           }
 
-          this.themeLoadingState = LOADING_STATE.LOADED;
+          this.themeLoadingStatus = LOADING_STATUS.LOADED;
         } catch {
           console.log("Failed to load theme:", this.state.theme);
-          this.themeLoadingState = LOADING_STATE.FAILED;
+          this.themeLoadingStatus = LOADING_STATUS.FAILED;
         }
       },
 
@@ -324,14 +347,14 @@ function main() {
 
       async handleLanguageChange() {
         try {
-          this.languageLoadingState = LOADING_STATE.LOADING;
+          this.languageLoadingStatus = LOADING_STATUS.LOADING;
           await this.currentHighlighter.loadLanguage(this.state.language, {
             loadModule,
           });
-          this.languageLoadingState = LOADING_STATE.LOADED;
+          this.languageLoadingStatus = LOADING_STATUS.LOADED;
         } catch {
           console.log("Failed to load language:", this.state.language);
-          this.languageLoadingState = LOADING_STATE.FAILED;
+          this.languageLoadingStatus = LOADING_STATUS.FAILED;
         }
       },
 

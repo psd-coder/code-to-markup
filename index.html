@@ -141,7 +141,7 @@
             </div>
           </div>
           <div class="code-blocks__content preview preview_fallback" :class="{ 'preview_fallback': showFallback }"
-            :data-fallback-message="fallbackHighlightedMessage" x-html="isProcessing ? '' : output.code"></div>
+            :data-fallback-message="fallbackHighlightedMessage" x-html="showFallback ? '' : output.code"></div>
         </div>
       </div>
 
