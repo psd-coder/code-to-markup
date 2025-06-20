@@ -113,12 +113,16 @@ function main() {
       },
 
       get fallbackHighlightedMessage() {
+        const offlineAddition = this.isOnline
+          ? "Try reload page to…"
+          : "You are offline now. You can still edit the code, but highlighting will only work for already loaded highlighters, languages, and themes from when you were online.";
+
         if (this.highlighterStatus === HIGHLIGHTER_STATUS.INITIALIZING) {
           return "Loading highlighter...";
         }
 
         if (this.highlighterStatus === HIGHLIGHTER_STATUS.FAILED) {
-          return `Failed to load highlighter "${this.state.highlighter}". Please check your internet connection or try a different highlighter.`;
+          return `Failed to load highlighter "${this.state.highlighter}". ${offlineAddition}`;
         }
 
         if (this.highlightingStatus === HIGHLIGHTING_STATUS.HIGHLIGHTING) {
@@ -126,15 +130,15 @@ function main() {
         }
 
         if (this.highlightingStatus === HIGHLIGHTING_STATUS.FAILED) {
-          return `Failed to highlight code with "${this.state.highlighter}", language "${this.state.language}", theme "${this.state.theme}". Please check your internet connection or try a different highlighter.`;
+          return `Failed to highlight code with "${this.state.highlighter}", language "${this.state.language}", theme "${this.state.theme}". ${offlineAddition}`;
         }
 
         if (this.themeLoadingStatus === LOADING_STATUS.FAILED) {
-          return `Failed to load theme "${this.state.theme}". Please check your internet connection or try a different theme.`;
+          return `Failed to load theme "${this.state.theme}". ${offlineAddition}`;
         }
 
         if (this.languageLoadingStatus === LOADING_STATUS.FAILED) {
-          return `Failed to load language "${this.state.language}". Please check your internet connection or try a different language.`;
+          return `Failed to load language "${this.state.language}". ${offlineAddition}`;
         }
 
         if (this.languageLoadingStatus === LOADING_STATUS.LOADING) {
