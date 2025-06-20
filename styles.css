@@ -293,6 +293,10 @@ body {
   gap: var(--size-xs);
   z-index: 10;
 
+  @media (max-width: 1560px) {
+    position: absolute;
+  }
+
   @media (max-width: 600px) {
     position: static;
     flex-direction: row;
