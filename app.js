@@ -8,15 +8,15 @@ const STATE_TO_SEARCH_PARAMS = { highlighter: "h", theme: "t", language: "l" };
 const HIGHLIGHTERS = {
   shiki: {
     name: "Shiki",
-    file: "./highlighters/shiki.mjs",
+    file: "./highlighters/shiki.js",
   },
   highlight: {
     name: "Highlight.js",
-    file: "./highlighters/highlight.mjs",
+    file: "./highlighters/highlight.js",
   },
   prism: {
     name: "Prism.js",
-    file: "./highlighters/prism.mjs",
+    file: "./highlighters/prism.js",
   },
 };
 

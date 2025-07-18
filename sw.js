@@ -1,7 +1,7 @@
 importScripts("https://cdn.jsdelivr.net/npm/workbox-sw@7/build/workbox-sw.js");
 
 if (workbox) {
-  const APP_CACHE = "app-v1";
+  const APP_CACHE = "app-v2";
   const CDN_CACHE = "cdn-v1";
 
   workbox.setConfig({ debug: false });
