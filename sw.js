@@ -8,7 +8,7 @@ if (workbox) {
   // For GitHub Pages: /code-to-markup/, for local dev: /
   const BASE_PATH = self.location.pathname.replace(/\/sw\.js$/, "") || "";
 
-  workbox.setConfig({ debug: false });
+  workbox.setConfig({ debug: false }); // Enable debug mode
   workbox.navigationPreload.enable();
 
   // Skip waiting and claim clients immediately on install
@@ -23,16 +23,22 @@ if (workbox) {
   workbox.precaching.cleanupOutdatedCaches();
   workbox.precaching.precacheAndRoute([
     { url: `${BASE_PATH}/index.html`, revision: APP_CACHE },
+    { url: `${BASE_PATH}/app.js`, revision: APP_CACHE },
+    { url: `${BASE_PATH}/styles.css`, revision: APP_CACHE },
+    { url: `${BASE_PATH}/manifest.json`, revision: APP_CACHE },
   ]);
 
+  // Navigation route for SPA - handles all navigation requests
   workbox.routing.registerRoute(
     new workbox.routing.NavigationRoute(
       workbox.precaching.createHandlerBoundToURL(`${BASE_PATH}/index.html`)
     )
   );
 
+  // Cache other same-origin resources (but exclude navigation requests)
   workbox.routing.registerRoute(
-    ({ url }) => url.origin === self.location.origin,
+    ({ request, url }) =>
+      url.origin === self.location.origin && request.destination !== "document",
     new workbox.strategies.NetworkFirst({
       cacheName: APP_CACHE,
       plugins: [
