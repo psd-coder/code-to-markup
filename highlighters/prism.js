@@ -7,6 +7,7 @@ export default {
     );
     window.Prism.plugins.autoloader.languages_path = `${this.baseUrl}/components/`;
   },
+  hasCssTheme: true,
   async loadTheme(theme) {
     const url = `${this.baseUrl}/themes/${theme}.min.css`;
 
@@ -15,7 +16,7 @@ export default {
         styles: await res.text(),
         size: res.headers.get("Content-Length"),
       }))
-      .then(({ styles, size }) => ({ isCss: true, url, styles, size }));
+      .then(({ styles, size }) => ({ url, styles, size }));
   },
   async loadLanguage(language) {
     return new Promise((resolve, reject) =>

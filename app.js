@@ -322,13 +322,17 @@ function main() {
       async handleThemeChange() {
         try {
           this.themeLoadingStatus = LOADING_STATUS.LOADING;
-          this.output.cssTheme = null;
+
+          if (!this.currentHighlighter.hasCssTheme) {
+            this.output.cssTheme = null;
+          }
+
           const theme = await this.currentHighlighter.loadTheme(
             this.state.theme,
             { loadModule }
           );
 
-          if (theme.isCss) {
+          if (this.currentHighlighter.hasCssTheme && theme) {
             this.output.cssTheme = {
               ...theme,
               instruction: `<link rel="stylesheet" href="${theme.url}">`,
@@ -467,8 +471,9 @@ function formatSize(size) {
 function getHighlighterFallback(initial) {
   return {
     baseUrl: "",
+    hasCssTheme: false,
     loadTheme() {
-      return Promise.resolve({ isCss: false });
+      return Promise.resolve(null);
     },
     loadLanguage() {
       return Promise.resolve();

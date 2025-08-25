@@ -12,10 +12,11 @@ export default {
       engine: createOnigurumaEngine(loadModule(`${this.baseUrl}/wasm/+esm`)),
     });
   },
+  hasCssTheme: false,
   async loadTheme(theme, { loadModule }) {
     return this.shikiInstance
       .loadTheme(loadModule(`${this.baseUrl}/themes/${theme}/+esm`))
-      .then(() => ({ isCSS: false }));
+      .then(() => null);
   },
   async loadLanguage(language, { loadModule }) {
     return this.shikiInstance.loadLanguage(

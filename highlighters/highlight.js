@@ -6,6 +6,7 @@ export default {
       (m) => m.default
     );
   },
+  hasCssTheme: true,
   async loadTheme(theme) {
     const url = `${this.baseUrl}/styles/${theme}.min.css`;
 
@@ -14,7 +15,7 @@ export default {
         styles: await res.text(),
         size: res.headers.get("Content-Length"),
       }))
-      .then(({ styles, size }) => ({ isCss: true, url, styles, size }));
+      .then(({ styles, size }) => ({ url, styles, size }));
   },
   async loadLanguage(language, { loadModule }) {
     return loadModule(`${this.baseUrl}/es/languages/${language}.js`).then(

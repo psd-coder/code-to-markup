@@ -1,7 +1,7 @@
 importScripts("https://cdn.jsdelivr.net/npm/workbox-sw@7/build/workbox-sw.js");
 
 if (workbox) {
-  const APP_CACHE = "app-v3";
+  const APP_CACHE = "app-v4";
   const CDN_CACHE = "cdn-v1";
 
   // Dynamically determine base path
