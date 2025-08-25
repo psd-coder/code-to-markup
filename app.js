@@ -555,10 +555,36 @@ function urlSafeBtoa(data) {
 }
 
 if ("serviceWorker" in navigator) {
+  function showUpdatePrompt(worker) {
+    if (
+      confirm(
+        "A new version of Code to Markup is available. Would you like to reload the page to start using the new version?"
+      )
+    ) {
+      worker.postMessage({ type: "SKIP_WAITING" });
+    }
+  }
+
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("./sw.js")
       .then((registration) => {
+        if (registration.waiting) {
+          showUpdatePrompt(registration.waiting);
+        }
+
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener("statechange", () => {
+            if (
+              newWorker.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
+              showUpdatePrompt(newWorker);
+            }
+          });
+        });
+
         console.log(
           "ServiceWorker registration successful with scope: ",
           registration.scope
@@ -567,5 +593,10 @@ if ("serviceWorker" in navigator) {
       .catch((error) => {
         console.log("ServiceWorker registration failed: ", error);
       });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      console.log("The controller of current browsing context has changed.");
+      window.location.reload();
+    });
   });
 }
